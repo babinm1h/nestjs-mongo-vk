@@ -17,7 +17,6 @@ export class AuthController {
     }
 
     @UseGuards(LocalGuard)
-    @UsePipes(new ValidationPipe())
     @Post('/login')
     login(@Request() req) {
         return this.authService.login(req.user)

@@ -38,7 +38,7 @@ export class Video {
     preview: string
 
     @Prop({ required: true })
-    videoPath: string
+    video: string
 }
 
 
