@@ -12,7 +12,7 @@ export class Comment {
     text: string
 
     @Prop({ type: Types.ObjectId, ref: "User" })
-    user: User
+    user: Types.ObjectId
 
     @Prop({ type: Types.ObjectId, ref: "Video" })
     video: Types.ObjectId

@@ -25,4 +25,10 @@ export class UsersController {
     getPopular() {
         return this.usersService.getPopular()
     }
+
+    @UseGuards(JwtGuard)
+    @Put('/subscribe/:id')
+    toggleSubscribe(@Param('id') userId: Types.ObjectId, @Request() req) {
+        return this.usersService.toggleSubscribe(userId, req.user._id)
+    }
 }

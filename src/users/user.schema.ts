@@ -33,6 +33,12 @@ export class User {
 
     @Prop()
     banner: string
+
+    @Prop({ type: [{ type: Types.ObjectId, ref: "Video" }] })
+    likes: Types.ObjectId[]
+
+    @Prop({ type: [{ type: Types.ObjectId, ref: "Video" }] })
+    dislikes: Types.ObjectId[]
 }
 
 

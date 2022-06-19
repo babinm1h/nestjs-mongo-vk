@@ -9,13 +9,13 @@ export class LikesController {
     constructor(private likesService: LikesService) { }
 
     @UseGuards(JwtGuard)
-    @Put("/like/:id")
+    @Put("video/like/:id")
     likeVideo(@Param("id") videoId: Types.ObjectId, @Request() req) {
         return this.likesService.likeVideo(videoId, req.user._id)
     }
 
     @UseGuards(JwtGuard)
-    @Put("/dislike/:id")
+    @Put("video/dislike/:id")
     dislikeVideo(@Param("id") videoId: Types.ObjectId, @Request() req) {
         return this.likesService.dislikeVideo(videoId, req.user._id)
     }

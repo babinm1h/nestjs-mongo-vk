@@ -16,7 +16,8 @@ export class VideosService {
     ) { }
 
     async getById(videoId: Types.ObjectId) {
-        return await this.videoModel.findById(videoId).populate('user', '-password -email -subscriptions')
+        return await this.videoModel.findByIdAndUpdate(videoId, { $inc: { views: 1 } }, { new: true })
+            .populate('user', '-password -email -subscriptions')
     }
 
 
@@ -29,20 +30,24 @@ export class VideosService {
 
     async getMostPopular() {
         const popular = await this.videoModel.find({ views: { $gt: 0 }, isPublic: true })
-            .sort({ views: "desc" }).limit(10)
+            .populate('user', 'avatar name').sort({ views: "desc" }).limit(10)
         return popular
     }
 
 
     async getAll() {
         return this.videoModel.find({ isPublic: true }).sort({ createdAt: -1 })
-            .populate('user', '-password')
+            .populate('user', 'avatar name')
     }
 
 
     async getPopularByUser(userId: Types.ObjectId) {
-        const popular = await this.videoModel.find({ views: { $gt: 0 }, isPublic: true, user: userId })
-            .sort({ views: "desc" }).limit(10)
+        const popular = await this.videoModel.find({
+            views: { $gt: 0 },
+            isPublic: true,
+            user: new Types.ObjectId(userId)
+        }).sort({ views: "desc" }).limit(10).populate('user',)
+
         return popular
     }
 

@@ -22,10 +22,10 @@ export class Video {
     @Prop({ type: Types.ObjectId, ref: "User" })
     user: Types.ObjectId
 
-    @Prop({ default: 0 })
+    @Prop({ default: 0, min: 0 })
     likesCount: number
 
-    @Prop({ default: 0 })
+    @Prop({ default: 0, min: 0 })
     dislikesCount: number
 
     @Prop({ type: [{ type: Types.ObjectId, ref: "User" }] })
@@ -39,6 +39,9 @@ export class Video {
 
     @Prop({ required: true })
     video: string
+
+    @Prop({ default: 0, min: 0 })
+    commentsCount: number
 }
 
 

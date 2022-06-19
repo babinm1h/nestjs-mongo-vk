@@ -28,4 +28,23 @@ export class UsersService {
             .sort({ subscribersCount: "desc" }).limit(5)
         return popular
     }
+
+
+    async toggleSubscribe(userId: Types.ObjectId, authId: Types.ObjectId) {
+        const authUser = await this.userModel.findById(authId)
+        const candidate = await this.userModel.findById(userId)
+
+        if (authUser.subscriptions.includes(candidate._id)) {
+            authUser.subscriptions = authUser.subscriptions.filter(id => String(id) !== String(userId))
+            candidate.subscribersCount -= 1
+
+        } else {
+            authUser.subscriptions.push(userId)
+            candidate.subscribersCount += 1
+        }
+
+        await candidate.save()
+        await authUser.save()
+        return candidate._id
+    }
 }
