@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { audit } from "rxjs";
@@ -6,6 +6,7 @@ import { FileTypes, MediaService } from "src/media/media.service";
 import { User, UserDocument } from "src/users/user.schema";
 import { CreateVideoDto } from "./dto/createVideo.dto";
 import { SearchVideoDto } from "./dto/searchVideo.dto";
+import { UpdateVideoDto } from "./dto/updateVideo.dto";
 import { Video, VideoDocument } from "./video.schema";
 
 
@@ -23,6 +24,9 @@ export class VideosService {
             .populate('user', '-password -email -subscriptions')
     }
 
+    async getStudioVideo(videoId: Types.ObjectId) {
+        return await this.videoModel.findById(new Types.ObjectId(videoId))
+    }
 
     async delete(videoId: Types.ObjectId, userId: Types.ObjectId) {
         const video = await this.videoModel.findById(videoId)
@@ -109,5 +113,20 @@ export class VideosService {
 
     async getStudioVideos(authId: Types.ObjectId) {
         return await this.videoModel.find({ user: authId })
+    }
+
+    async updateVideo(dto: UpdateVideoDto) {
+        let video = await this.videoModel.findById(dto.videoId)
+        if (!video) throw new NotFoundException("video not found")
+
+        video.title = dto.title
+        video.description = dto.description
+        video.isPublic = JSON.parse(dto.isPublic)
+        if (dto.preview) {
+            const preview = this.mediaService.createFile(FileTypes.PREVIEW, dto.preview)
+            video.preview = preview
+        }
+
+        return await video.save()
     }
 }

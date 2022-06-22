@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
-import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { FileFieldsInterceptor, FileInterceptor } from "@nestjs/platform-express";
 import { Types } from "mongoose";
 import { JwtGuard } from "src/auth/guards/jwt.guard";
 import { CreateVideoBodyDto } from "./dto/createVideo.dto";
 import { SearchVideoDto } from "./dto/searchVideo.dto";
+import { UpdateVideoBody } from "./dto/updateVideo.dto";
 import { VideosService } from "./videos.service";
 
 @Controller("/videos")
@@ -21,6 +22,12 @@ export class VideosController {
     @Get('/studio')
     getStudioVideos(@Request() req) {
         return this.videosService.getStudioVideos(req.user._id)
+    }
+
+    @UseGuards(JwtGuard)
+    @Get('/studio/video/:id')
+    getStudioVideo(@Param("id") videoId: Types.ObjectId) {
+        return this.videosService.getStudioVideo(videoId)
     }
 
     @Get('/search')
@@ -83,4 +90,15 @@ export class VideosController {
         return this.videosService.delete(videoId, req.user._id)
     }
 
+
+    @UseGuards(JwtGuard)
+    @UseInterceptors(FileInterceptor('preview'))
+    @Put('/update/:id')
+    update(
+        @Param('id') videoId: Types.ObjectId,
+        @UploadedFile() preview,
+        @Body() { description, isPublic, title }: UpdateVideoBody
+    ) {
+        return this.videosService.updateVideo({ videoId, preview, description, isPublic, title })
+    }
 }
