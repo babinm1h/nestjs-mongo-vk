@@ -116,7 +116,7 @@ export class VideosService {
     }
 
     async updateVideo(dto: UpdateVideoDto) {
-        let video = await this.videoModel.findById(dto.videoId)
+        const video = await this.videoModel.findById(dto.videoId)
         if (!video) throw new NotFoundException("video not found")
 
         video.title = dto.title

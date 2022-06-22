@@ -4,6 +4,7 @@ import { User, UserDocument } from "./user.schema";
 import { Model, Types } from 'mongoose'
 import { UpdateUserDto } from "./dto/updateUser.dto";
 import { Video, VideoDocument } from "src/videos/video.schema";
+import { FileTypes, MediaService } from "src/media/media.service";
 
 @Injectable()
 export class UsersService {
@@ -11,6 +12,7 @@ export class UsersService {
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
         @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
+        private mediaService: MediaService
     ) { }
 
     async getById(id: Types.ObjectId) {
@@ -27,8 +29,22 @@ export class UsersService {
 
 
     async updateProfile(authId: Types.ObjectId, dto: UpdateUserDto) {
-        const user = await this.userModel.findByIdAndUpdate(authId, { $set: { ...dto } }, { new: true })
+        const user = await this.userModel.findById(authId)
         if (!user) throw new NotFoundException('User not found')
+
+        user.name = dto.name
+        user.description = dto.description
+        if (dto.country) user.country = dto.country
+        if (dto.banner) {
+            const banner = this.mediaService.createFile(FileTypes.BANNER, dto.banner)
+            user.banner = banner
+        }
+        if (dto.avatar) {
+            const avatar = this.mediaService.createFile(FileTypes.AVATAR, dto.avatar)
+            user.avatar = avatar
+        }
+        await user.save()
+
         return user
     }
 

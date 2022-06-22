@@ -3,17 +3,27 @@ import { IsString } from "class-validator"
 
 export class UpdateUserDto {
     @IsString()
-    private name?: string
+    readonly name?: string
 
     @IsString()
-    private description?: string
+    readonly description?: string
 
     @IsString()
-    private country?: string
+    readonly country?: string
+
+    readonly avatar?: Express.Multer.File
+
+    readonly banner?: Express.Multer.File
+}
+
+
+export class UpdateUserBody {
+    @IsString()
+    readonly name?: string
 
     @IsString()
-    private avatar?: string
+    readonly description?: string
 
     @IsString()
-    private banner?: string
+    readonly country?: string
 }

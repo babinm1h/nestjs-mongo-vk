@@ -10,6 +10,7 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
 import { UsersService } from "src/users/users.service";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { Video, VideoSchema } from "src/videos/video.schema";
+import { MediaService } from "src/media/media.service";
 
 @Module({
     imports: [
@@ -21,7 +22,7 @@ import { Video, VideoSchema } from "src/videos/video.schema";
             useFactory: getJwtConfig
         })
     ],
-    providers: [AuthService, JwtStrategy, UsersService, ConfigService, LocalStrategy],
+    providers: [AuthService, JwtStrategy, UsersService, ConfigService, LocalStrategy, MediaService],
     controllers: [AuthController]
 })
 
