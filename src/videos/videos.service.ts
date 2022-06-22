@@ -1,7 +1,9 @@
 import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
+import { audit } from "rxjs";
 import { FileTypes, MediaService } from "src/media/media.service";
+import { User, UserDocument } from "src/users/user.schema";
 import { CreateVideoDto } from "./dto/createVideo.dto";
 import { SearchVideoDto } from "./dto/searchVideo.dto";
 import { Video, VideoDocument } from "./video.schema";
@@ -12,11 +14,12 @@ export class VideosService {
 
     constructor(
         @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
+        @InjectModel(User.name) private userModel: Model<UserDocument>,
         private mediaService: MediaService
     ) { }
 
     async getById(videoId: Types.ObjectId) {
-        return await this.videoModel.findByIdAndUpdate(videoId, { $inc: { views: 1 } }, { new: true })
+        return await this.videoModel.findByIdAndUpdate(videoId, { $inc: { views: 1 } })
             .populate('user', '-password -email -subscriptions')
     }
 
@@ -37,7 +40,7 @@ export class VideosService {
 
     async getAll() {
         return this.videoModel.find({ isPublic: true }).sort({ createdAt: -1 })
-            .populate('user', 'avatar name')
+            .populate('user', 'avatar name').limit(16)
     }
 
 
@@ -53,20 +56,15 @@ export class VideosService {
 
 
     async search({ activeSort, searchTerm }: SearchVideoDto) {
-        let query = {} as any
-        let sort = {} as any
 
-        if (activeSort === 'date') sort.createdAt = -1
-        if (activeSort === 'views') sort.views = -1
-
-        if (searchTerm) query.title = new RegExp(searchTerm, 'i')
-
-        return this.videoModel.find({ ...query, isPublic: true }).sort(sort).populate("user", '-password')
+        return this.videoModel.find({ title: new RegExp(searchTerm, 'i'), isPublic: true })
+            .populate("user", 'avatar name subscribersCount')
     }
 
 
     async getByUser(userId: Types.ObjectId) {
-        return this.videoModel.find({ user: userId }).sort({ createdAt: 'desc' })
+        return await this.videoModel.find({ user: new Types.ObjectId(userId), isPublic: true }).populate("user")
+            .sort({ createdAt: 'desc' })
     }
 
 
@@ -74,14 +72,16 @@ export class VideosService {
         const video = this.mediaService.createFile(FileTypes.VIDEO, dto.video)
         const preview = this.mediaService.createFile(FileTypes.PREVIEW, dto.preview)
 
-        return await this.videoModel.create({
+        const created = await this.videoModel.create({
             description: dto.description,
             title: dto.title,
             video,
             preview,
-            isPublic: dto.isPublic || true,
+            isPublic: JSON.parse(dto.isPublic),
             user: dto.user
         })
+
+        return await created.populate('user', '-password')
     }
 
 
@@ -92,4 +92,22 @@ export class VideosService {
     }
 
 
+    async getSubscriptions(authId: Types.ObjectId) {
+        const a = await this.videoModel.find({}).populate("user", '-password -email') as any
+        let videos = [];
+        const b = a.filter(v => {
+            if (v.user.subscribers.includes(authId)) {
+                videos.push(v)
+            } else {
+                return v
+            }
+        })
+
+        return videos
+    }
+
+
+    async getStudioVideos(authId: Types.ObjectId) {
+        return await this.videoModel.find({ user: authId })
+    }
 }

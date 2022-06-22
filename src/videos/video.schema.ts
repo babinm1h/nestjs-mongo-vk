@@ -1,5 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Types } from 'mongoose'
+import { User } from 'src/users/user.schema';
 
 export type VideoDocument = Video & Document;
 
@@ -24,9 +25,6 @@ export class Video {
 
     @Prop({ default: 0, min: 0 })
     likesCount: number
-
-    @Prop({ default: 0, min: 0 })
-    dislikesCount: number
 
     @Prop({ type: [{ type: Types.ObjectId, ref: "User" }] })
     likes: Types.ObjectId[]

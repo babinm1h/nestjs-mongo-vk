@@ -7,7 +7,7 @@ import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
 import { UsersModule } from './users/users.module';
 import { memoryStorage } from 'multer'
-import { VideosModule } from './videos/video.module';
+import { VideosModule } from './videos/videos.module';
 import { ServeStaticModule } from "@nestjs/serve-static"
 import * as path from 'path';
 

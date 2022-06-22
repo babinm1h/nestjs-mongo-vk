@@ -4,12 +4,24 @@ import { Types } from "mongoose";
 import { JwtGuard } from "src/auth/guards/jwt.guard";
 import { CreateVideoBodyDto } from "./dto/createVideo.dto";
 import { SearchVideoDto } from "./dto/searchVideo.dto";
-import { VideosService } from "./video.service";
+import { VideosService } from "./videos.service";
 
 @Controller("/videos")
 export class VideosController {
 
     constructor(private videosService: VideosService) { }
+
+    @UseGuards(JwtGuard)
+    @Get('/subscriptions/for/auth/user')
+    getSubscriptions(@Request() req) {
+        return this.videosService.getSubscriptions(req.user._id)
+    }
+
+    @UseGuards(JwtGuard)
+    @Get('/studio')
+    getStudioVideos(@Request() req) {
+        return this.videosService.getStudioVideos(req.user._id)
+    }
 
     @Get('/search')
     search(@Query() dto: SearchVideoDto) {
@@ -26,13 +38,10 @@ export class VideosController {
         return this.videosService.getAll()
     }
 
-
-    @UseGuards(JwtGuard)
-    @Delete('/:id')
-    delete(@Param('id') videoId: Types.ObjectId, @Request() req) {
-        return this.videosService.delete(videoId, req.user._id)
+    @Get('/user/:id')
+    getByUser(@Param("id") userId: Types.ObjectId) {
+        return this.videosService.getByUser(userId)
     }
-
 
     @Get('/most/popular')
     getMostPopular() {
@@ -66,4 +75,12 @@ export class VideosController {
     updateViews(@Param("id") videoId: Types.ObjectId) {
         return this.videosService.updateViews(videoId)
     }
+
+
+    @UseGuards(JwtGuard)
+    @Delete('/:id')
+    delete(@Param('id') videoId: Types.ObjectId, @Request() req) {
+        return this.videosService.delete(videoId, req.user._id)
+    }
+
 }

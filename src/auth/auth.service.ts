@@ -17,7 +17,7 @@ export class AuthService {
 
 
     async validateUser({ email, password }: AuthDto) {
-        const user = await this.userModel.findOne({ email }).select('-password')
+        const user = await this.userModel.findOne({ email })
         if (!user) throw new BadRequestException("User with such email not found")
 
         const isPasswordMatch = await bcrypt.compare(password, user.password)

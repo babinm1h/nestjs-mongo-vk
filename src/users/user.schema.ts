@@ -39,6 +39,13 @@ export class User {
 
     @Prop({ type: [{ type: Types.ObjectId, ref: "Video" }] })
     dislikes: Types.ObjectId[]
+
+    @Prop({ default: 0 })
+    totalViews: number
+
+
+    @Prop({ type: [{ type: Types.ObjectId, ref: "User" }] })
+    subscribers: Types.ObjectId[]
 }
 
 

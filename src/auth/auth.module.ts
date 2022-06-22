@@ -9,10 +9,12 @@ import { getJwtConfig } from "config/getJwtConfig";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { UsersService } from "src/users/users.service";
 import { LocalStrategy } from "./strategies/local.strategy";
+import { Video, VideoSchema } from "src/videos/video.schema";
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+        MongooseModule.forFeature([{ name: Video.name, schema: VideoSchema }]),
         JwtModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],

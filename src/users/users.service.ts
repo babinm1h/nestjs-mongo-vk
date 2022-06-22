@@ -3,15 +3,25 @@ import { InjectModel } from "@nestjs/mongoose"
 import { User, UserDocument } from "./user.schema";
 import { Model, Types } from 'mongoose'
 import { UpdateUserDto } from "./dto/updateUser.dto";
+import { Video, VideoDocument } from "src/videos/video.schema";
 
 @Injectable()
 export class UsersService {
 
-    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
+    constructor(
+        @InjectModel(User.name) private userModel: Model<UserDocument>,
+        @InjectModel(Video.name) private videoModel: Model<VideoDocument>,
+    ) { }
 
     async getById(id: Types.ObjectId) {
+        const userVideos = await this.videoModel.find({ user: new Types.ObjectId(id) })
+        const totalViews = userVideos.reduce((prev, curr) => prev + curr.views, 0)
+
         const user = await this.userModel.findById(id)
         if (!user) throw new NotFoundException('User not found')
+        user.totalViews = totalViews
+        await user.save()
+
         return user
     }
 
@@ -24,8 +34,7 @@ export class UsersService {
 
 
     async getPopular() {
-        const popular = await this.userModel.find({ subscribersCount: { $gt: 0 } })
-            .sort({ subscribersCount: "desc" }).limit(5)
+        const popular = await this.userModel.find({ subscribersCount: { $gt: 0 } }).select("name avatar subscribersCount").sort({ subscribersCount: "desc" }).limit(5)
         return popular
     }
 
@@ -37,10 +46,11 @@ export class UsersService {
         if (authUser.subscriptions.includes(candidate._id)) {
             authUser.subscriptions = authUser.subscriptions.filter(id => String(id) !== String(userId))
             candidate.subscribersCount -= 1
-
+            candidate.subscribers = candidate.subscribers.filter(id => String(id) !== String(authId))
         } else {
             authUser.subscriptions.push(userId)
             candidate.subscribersCount += 1
+            candidate.subscribers.push(authId)
         }
 
         await candidate.save()

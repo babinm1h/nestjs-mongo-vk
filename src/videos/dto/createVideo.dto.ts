@@ -3,7 +3,7 @@
 export class CreateVideoDto {
     readonly description: string
     readonly title: string
-    readonly isPublic?: boolean
+    readonly isPublic: string
     readonly user: string
 
     readonly video: Express.Multer.File
@@ -14,5 +14,5 @@ export class CreateVideoDto {
 export class CreateVideoBodyDto {
     readonly description: string
     readonly title: string
-    readonly isPublic: boolean
+    readonly isPublic: string
 }
