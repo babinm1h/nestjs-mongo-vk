@@ -28,7 +28,7 @@ export class User {
     @Prop()
     country: string
 
-    @Prop({ default: "http://localhost:7777/avatar/default.png" })
+    @Prop({ default: "https://y0utubeq.herokuapp.com/avatar/default.png" })
     avatar: string
 
     @Prop()
