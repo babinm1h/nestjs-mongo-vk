@@ -43,7 +43,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "country", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: "https://y0utubeq.herokuapp.com/avatar/default.png" }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], User.prototype, "avatar", void 0);
 __decorate([
