@@ -24,13 +24,15 @@ export class VideosService {
             .populate('user', '-password -email -subscriptions')
     }
 
+
     async getStudioVideo(videoId: Types.ObjectId) {
         return await this.videoModel.findById(new Types.ObjectId(videoId))
     }
 
+
     async delete(videoId: Types.ObjectId, userId: Types.ObjectId) {
         const video = await this.videoModel.findById(videoId)
-        if (video.user !== userId) throw new ForbiddenException("Not allowed")
+        if (String(video.user) !== String(userId)) throw new ForbiddenException("Not allowed")
         return await this.videoModel.findByIdAndDelete(videoId)
     }
 
@@ -42,9 +44,13 @@ export class VideosService {
     }
 
 
-    async getAll() {
-        return this.videoModel.find({ isPublic: true }).sort({ createdAt: -1 })
-            .populate('user', 'avatar name').limit(16)
+    async getAll(page: number, limit = 12) {
+        const videos = await this.videoModel.find({ isPublic: true }).sort({ createdAt: -1 })
+            .skip((page * limit) - limit).populate('user', 'avatar name').limit(limit)
+
+        const totalCount = await this.videoModel.find({ isPublic: 'true' }).count()
+
+        return { videos, totalCount }
     }
 
 
@@ -112,7 +118,7 @@ export class VideosService {
 
 
     async getStudioVideos(authId: Types.ObjectId) {
-        return await this.videoModel.find({ user: authId })
+        return await this.videoModel.find({ user: authId }).sort({ createdAt: 'desc' })
     }
 
     async updateVideo(dto: UpdateVideoDto) {

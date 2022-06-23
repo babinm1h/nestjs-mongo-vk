@@ -41,8 +41,8 @@ export class VideosController {
     }
 
     @Get('/')
-    getAll() {
-        return this.videosService.getAll()
+    getAll(@Query('page') page: number) {
+        return this.videosService.getAll(page)
     }
 
     @Get('/user/:id')
