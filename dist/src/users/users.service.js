@@ -26,7 +26,9 @@ let UsersService = class UsersService {
         this.mediaService = mediaService;
     }
     async getById(id) {
-        const userVideos = await this.videoModel.find({ user: new mongoose_2.Types.ObjectId(id) });
+        const userVideos = await this.videoModel.find({
+            user: new mongoose_2.Types.ObjectId(id),
+        });
         const totalViews = userVideos.reduce((prev, curr) => prev + curr.views, 0);
         const user = await this.userModel.findById(id);
         if (!user)
@@ -44,27 +46,31 @@ let UsersService = class UsersService {
         if (dto.country)
             user.country = dto.country;
         if (dto.banner) {
-            const banner = this.mediaService.createFile(media_service_1.FileTypes.BANNER, dto.banner);
+            const banner = await this.mediaService.image(dto.banner);
             user.banner = banner;
         }
         if (dto.avatar) {
-            const avatar = this.mediaService.createFile(media_service_1.FileTypes.AVATAR, dto.avatar);
+            const avatar = await this.mediaService.image(dto.avatar);
             user.avatar = avatar;
         }
         await user.save();
         return user;
     }
     async getPopular() {
-        const popular = await this.userModel.find({ subscribersCount: { $gt: 0 } }).select("name avatar subscribersCount").sort({ subscribersCount: "desc" }).limit(5);
+        const popular = await this.userModel
+            .find({ subscribersCount: { $gt: 0 } })
+            .select('name avatar subscribersCount')
+            .sort({ subscribersCount: 'desc' })
+            .limit(5);
         return popular;
     }
     async toggleSubscribe(userId, authId) {
         const authUser = await this.userModel.findById(authId);
         const candidate = await this.userModel.findById(userId);
         if (authUser.subscriptions.includes(candidate._id)) {
-            authUser.subscriptions = authUser.subscriptions.filter(id => String(id) !== String(userId));
+            authUser.subscriptions = authUser.subscriptions.filter((id) => String(id) !== String(userId));
             candidate.subscribersCount -= 1;
-            candidate.subscribers = candidate.subscribers.filter(id => String(id) !== String(authId));
+            candidate.subscribers = candidate.subscribers.filter((id) => String(id) !== String(authId));
         }
         else {
             authUser.subscriptions.push(userId);

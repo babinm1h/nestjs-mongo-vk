@@ -19,6 +19,7 @@ const multer_1 = require("multer");
 const videos_module_1 = require("./videos/videos.module");
 const serve_static_1 = require("@nestjs/serve-static");
 const path = require("path");
+const media_module_1 = require("./media/media.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -26,7 +27,7 @@ AppModule = __decorate([
         imports: [
             serve_static_1.ServeStaticModule.forRoot({
                 rootPath: path.resolve(__dirname, 'static'),
-                serveStaticOptions: { index: false }
+                serveStaticOptions: { index: false },
             }),
             config_1.ConfigModule.forRoot(),
             mongoose_1.MongooseModule.forRoot(process.env.MONGO_URI),
@@ -35,9 +36,10 @@ AppModule = __decorate([
             comments_module_1.CommentsModule,
             likes_module_1.LikesModule,
             videos_module_1.VideosModule,
+            media_module_1.MediaModule,
             platform_express_1.MulterModule.register({
-                storage: (0, multer_1.memoryStorage)()
-            })
+                storage: (0, multer_1.memoryStorage)(),
+            }),
         ],
         controllers: [],
         providers: [],

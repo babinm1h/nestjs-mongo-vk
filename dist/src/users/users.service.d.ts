@@ -1,8 +1,8 @@
-import { User, UserDocument } from "./user.schema";
+import { User, UserDocument } from './user.schema';
 import { Model, Types } from 'mongoose';
-import { UpdateUserDto } from "./dto/updateUser.dto";
-import { VideoDocument } from "src/videos/video.schema";
-import { MediaService } from "src/media/media.service";
+import { UpdateUserDto } from './dto/updateUser.dto';
+import { VideoDocument } from 'src/videos/video.schema';
+import { MediaService } from 'src/media/media.service';
 export declare class UsersService {
     private userModel;
     private videoModel;

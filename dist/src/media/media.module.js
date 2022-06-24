@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MediaModule = exports.FileTypes = void 0;
 const common_1 = require("@nestjs/common");
+const cloudinary_provider_1 = require("./cloudinary.provider");
 const media_service_1 = require("./media.service");
 var FileTypes;
 (function (FileTypes) {
@@ -20,7 +21,8 @@ let MediaModule = class MediaModule {
 MediaModule = __decorate([
     (0, common_1.Module)({
         imports: [],
-        providers: [media_service_1.MediaService]
+        providers: [media_service_1.MediaService, cloudinary_provider_1.CloudinaryProvider],
+        exports: [cloudinary_provider_1.CloudinaryProvider, media_service_1.MediaService],
     })
 ], MediaModule);
 exports.MediaModule = MediaModule;

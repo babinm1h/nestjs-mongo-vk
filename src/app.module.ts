@@ -1,21 +1,22 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from "@nestjs/config"
-import { MongooseModule } from "@nestjs/mongoose"
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 import { AuthModule } from './auth/auth.module';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
 import { UsersModule } from './users/users.module';
-import { memoryStorage } from 'multer'
+import { memoryStorage } from 'multer';
 import { VideosModule } from './videos/videos.module';
-import { ServeStaticModule } from "@nestjs/serve-static"
+import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
+import { MediaModule } from './media/media.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, 'static'),
-      serveStaticOptions: { index: false }
+      serveStaticOptions: { index: false },
     }),
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGO_URI),
@@ -24,13 +25,12 @@ import * as path from 'path';
     CommentsModule,
     LikesModule,
     VideosModule,
+    MediaModule,
     MulterModule.register({
-      storage: memoryStorage()
-    })
+      storage: memoryStorage(),
+    }),
   ],
   controllers: [],
   providers: [],
 })
-
-
-export class AppModule { }
+export class AppModule {}

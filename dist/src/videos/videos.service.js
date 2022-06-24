@@ -26,7 +26,8 @@ let VideosService = class VideosService {
         this.mediaService = mediaService;
     }
     async getById(videoId) {
-        return await this.videoModel.findByIdAndUpdate(videoId, { $inc: { views: 1 } })
+        return await this.videoModel
+            .findByIdAndUpdate(videoId, { $inc: { views: 1 } })
             .populate('user', '-password -email -subscriptions');
     }
     async getStudioVideo(videoId) {
@@ -35,59 +36,75 @@ let VideosService = class VideosService {
     async delete(videoId, userId) {
         const video = await this.videoModel.findById(videoId);
         if (String(video.user) !== String(userId))
-            throw new common_1.ForbiddenException("Not allowed");
+            throw new common_1.ForbiddenException('Not allowed');
         return await this.videoModel.findByIdAndDelete(videoId);
     }
     async getMostPopular() {
-        const popular = await this.videoModel.find({ views: { $gt: 0 }, isPublic: true })
-            .populate('user', 'avatar name').sort({ views: "desc" }).limit(10);
+        const popular = await this.videoModel
+            .find({ views: { $gt: 0 }, isPublic: true })
+            .populate('user', 'avatar name')
+            .sort({ views: 'desc' })
+            .limit(10);
         return popular;
     }
     async getAll(page, limit = 12) {
-        const videos = await this.videoModel.find({ isPublic: true }).sort({ createdAt: -1 })
-            .skip((page * limit) - limit).populate('user', 'avatar name').limit(limit);
+        const videos = await this.videoModel
+            .find({ isPublic: true })
+            .sort({ createdAt: -1 })
+            .skip(page * limit - limit)
+            .populate('user', 'avatar name')
+            .limit(limit);
         const totalCount = await this.videoModel.find({ isPublic: 'true' }).count();
         return { videos, totalCount };
     }
     async getPopularByUser(userId) {
-        const popular = await this.videoModel.find({
+        const popular = await this.videoModel
+            .find({
             views: { $gt: 0 },
             isPublic: true,
-            user: new mongoose_2.Types.ObjectId(userId)
-        }).sort({ views: "desc" }).limit(10).populate('user');
+            user: new mongoose_2.Types.ObjectId(userId),
+        })
+            .sort({ views: 'desc' })
+            .limit(10)
+            .populate('user');
         return popular;
     }
     async search({ activeSort, searchTerm }) {
-        return this.videoModel.find({ title: new RegExp(searchTerm, 'i'), isPublic: true })
-            .populate("user", 'avatar name subscribersCount');
+        return this.videoModel
+            .find({ title: new RegExp(searchTerm, 'i'), isPublic: true })
+            .populate('user', 'avatar name subscribersCount');
     }
     async getByUser(userId) {
-        return await this.videoModel.find({ user: new mongoose_2.Types.ObjectId(userId), isPublic: true }).populate("user")
+        return await this.videoModel
+            .find({ user: new mongoose_2.Types.ObjectId(userId), isPublic: true })
+            .populate('user')
             .sort({ createdAt: 'desc' });
     }
     async create(dto) {
-        const video = this.mediaService.createFile(media_service_1.FileTypes.VIDEO, dto.video);
-        const preview = this.mediaService.createFile(media_service_1.FileTypes.PREVIEW, dto.preview);
+        const video = await this.mediaService.video(dto.video);
+        const preview = await this.mediaService.image(dto.preview);
         const created = await this.videoModel.create({
             description: dto.description,
             title: dto.title,
             video,
             preview,
             isPublic: JSON.parse(dto.isPublic),
-            user: dto.user
+            user: dto.user,
         });
         return await created.populate('user', '-password');
     }
     async updateViews(videoId) {
         const video = this.videoModel.findByIdAndUpdate(videoId, { $inc: { views: 1 } }, { new: true });
         if (!video)
-            throw new common_1.NotFoundException("Video not found");
+            throw new common_1.NotFoundException('Video not found');
         return video;
     }
     async getSubscriptions(authId) {
-        const a = await this.videoModel.find({}).populate("user", '-password -email');
+        const a = (await this.videoModel
+            .find({})
+            .populate('user', '-password -email'));
         let videos = [];
-        const b = a.filter(v => {
+        const b = a.filter((v) => {
             if (v.user.subscribers.includes(authId)) {
                 videos.push(v);
             }
@@ -98,17 +115,19 @@ let VideosService = class VideosService {
         return videos;
     }
     async getStudioVideos(authId) {
-        return await this.videoModel.find({ user: authId }).sort({ createdAt: 'desc' });
+        return await this.videoModel
+            .find({ user: authId })
+            .sort({ createdAt: 'desc' });
     }
     async updateVideo(dto) {
         const video = await this.videoModel.findById(dto.videoId);
         if (!video)
-            throw new common_1.NotFoundException("video not found");
+            throw new common_1.NotFoundException('video not found');
         video.title = dto.title;
         video.description = dto.description;
         video.isPublic = JSON.parse(dto.isPublic);
         if (dto.preview) {
-            const preview = this.mediaService.createFile(media_service_1.FileTypes.PREVIEW, dto.preview);
+            const preview = await this.mediaService.image(dto.preview);
             video.preview = preview;
         }
         return await video.save();

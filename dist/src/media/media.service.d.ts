@@ -7,4 +7,6 @@ export declare enum FileTypes {
 }
 export declare class MediaService {
     createFile(type: FileTypes, file: Express.Multer.File): string;
+    image: (file: Express.Multer.File) => Promise<string>;
+    video: (file: Express.Multer.File) => Promise<string>;
 }

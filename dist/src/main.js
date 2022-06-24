@@ -8,11 +8,16 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, { bodyParser: true });
     const PORT = process.env.PORT || 7777;
     app.enableCors({
-        origin: 'https://animated-taiyaki-a533ea.netlify.app',
-        credentials: true
+        origin: [
+            'https://animated-taiyaki-a533ea.netlify.app',
+            'http://localhost:3000',
+        ],
+        credentials: true,
     });
     app.use(session({
-        secret: process.env.SESSION_SECRET, saveUninitialized: false, resave: false
+        secret: process.env.SESSION_SECRET,
+        saveUninitialized: false,
+        resave: false,
     }));
     app.use(passport.initialize());
     app.use(passport.session());

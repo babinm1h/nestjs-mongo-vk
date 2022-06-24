@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const path = require("path");
 const fs = require("fs");
 const uuid = require("uuid");
+const cloudinary_1 = require("cloudinary");
 var FileTypes;
 (function (FileTypes) {
     FileTypes["VIDEO"] = "video";
@@ -19,16 +20,45 @@ var FileTypes;
     FileTypes["BANNER"] = "banner";
 })(FileTypes = exports.FileTypes || (exports.FileTypes = {}));
 let MediaService = class MediaService {
+    constructor() {
+        this.image = async (file) => {
+            return new Promise((resolve, reject) => {
+                const upload = cloudinary_1.v2.uploader
+                    .upload_stream({
+                    folder: 'youtube/images',
+                }, async (err, result) => {
+                    if (err || !result)
+                        throw new common_1.BadRequestException('Cloudinary upload error ' + err.message);
+                    resolve(result.secure_url);
+                })
+                    .end(file.buffer);
+            });
+        };
+        this.video = async (file) => {
+            return new Promise((resolve, reject) => {
+                const upload = cloudinary_1.v2.uploader
+                    .upload_stream({
+                    folder: 'youtube/videos',
+                    resource_type: 'video',
+                }, async (err, result) => {
+                    if (err || !result)
+                        throw new common_1.BadRequestException('Cloudinary upload error ' + err.message);
+                    resolve(result.secure_url);
+                })
+                    .end(file.buffer);
+            });
+        };
+    }
     createFile(type, file) {
         try {
-            const fileExt = file.originalname.split(".").pop();
+            const fileExt = file.originalname.split('.').pop();
             const fileName = uuid.v4() + `.${fileExt}`;
-            const filePath = path.resolve(__dirname, "..", "static", type);
+            const filePath = path.resolve(__dirname, '..', 'static', type);
             if (!fs.existsSync(filePath)) {
                 fs.mkdirSync(filePath, { recursive: true });
             }
             fs.writeFileSync(path.resolve(filePath, fileName), file.buffer);
-            return type + "/" + fileName;
+            return type + '/' + fileName;
         }
         catch (err) {
             throw new common_1.HttpException(err.message, common_1.HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,10 +1,10 @@
-import { Model, Types } from "mongoose";
-import { MediaService } from "src/media/media.service";
-import { UserDocument } from "src/users/user.schema";
-import { CreateVideoDto } from "./dto/createVideo.dto";
-import { SearchVideoDto } from "./dto/searchVideo.dto";
-import { UpdateVideoDto } from "./dto/updateVideo.dto";
-import { Video, VideoDocument } from "./video.schema";
+import { Model, Types } from 'mongoose';
+import { MediaService } from 'src/media/media.service';
+import { UserDocument } from 'src/users/user.schema';
+import { CreateVideoDto } from './dto/createVideo.dto';
+import { SearchVideoDto } from './dto/searchVideo.dto';
+import { UpdateVideoDto } from './dto/updateVideo.dto';
+import { Video, VideoDocument } from './video.schema';
 export declare class VideosService {
     private videoModel;
     private userModel;
