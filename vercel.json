@@ -1,5 +1,8 @@
-{
+{ 
     "version": 2,
+    "env": {
+        "MONGO_URI": "mongodb+srv://user:vfhfrtif@cluster0.viabl.mongodb.net/?retryWrites=true&w=majority"
+    },
     "builds": [
         {
             "src": "src/main.ts",
