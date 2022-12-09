@@ -3,6 +3,8 @@ import * as passport from 'passport';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 
+// "start": "ts-node -r tsconfig-paths/register dist/src/main.js"
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bodyParser: true });
   const PORT = process.env.PORT || 7777;
