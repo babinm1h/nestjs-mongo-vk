@@ -13,13 +13,7 @@ async function bootstrap() {
     ],
     credentials: true,
   });
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET || 'r4nd0m',
-      saveUninitialized: false,
-      resave: false,
-    }),
-  );
+
   app.use(passport.initialize());
   app.use(passport.session());
   await app.listen(PORT, () => console.log(`${PORT} started`));
