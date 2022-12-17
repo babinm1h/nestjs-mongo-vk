@@ -6,9 +6,10 @@
 /// <reference types="mongoose/types/cursor" />
 /// <reference types="mongoose/types/document" />
 /// <reference types="mongoose/types/error" />
+/// <reference types="mongoose/types/expressions" />
 /// <reference types="mongoose/types/helpers" />
 /// <reference types="mongoose/types/middlewares" />
-/// <reference types="mongoose/types/indizes" />
+/// <reference types="mongoose/types/indexes" />
 /// <reference types="mongoose/types/models" />
 /// <reference types="mongoose/types/mongooseoptions" />
 /// <reference types="mongoose/types/pipelinestage" />
@@ -20,6 +21,8 @@
 /// <reference types="mongoose/types/types" />
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
+/// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose/types/inferschematype" />
 import { Types } from "mongoose";
 import { UpdateUserBody } from "./dto/updateUser.dto";
 import { UsersService } from "./users.service";
@@ -27,16 +30,16 @@ export declare class UsersController {
     private usersService;
     constructor(usersService: UsersService);
     getById(userId: Types.ObjectId): Promise<import("./user.schema").User & import("mongoose").Document<any, any, any> & {
-        _id: any;
+        _id: Types.ObjectId;
     }>;
     getPopular(): Promise<(import("./user.schema").User & import("mongoose").Document<any, any, any> & {
-        _id: any;
+        _id: Types.ObjectId;
     })[]>;
     toggleSubscribe(userId: Types.ObjectId, req: any): Promise<any>;
     updateUser(req: any, body: UpdateUserBody, files?: {
         avatar?: Express.Multer.File[];
         banner?: Express.Multer.File[];
     }): Promise<import("./user.schema").User & import("mongoose").Document<any, any, any> & {
-        _id: any;
+        _id: Types.ObjectId;
     }>;
 }

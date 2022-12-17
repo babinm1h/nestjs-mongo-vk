@@ -11,7 +11,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://animated-taiyaki-a533ea.netlify.app',
-      'http://localhost:3000',
+      'http://localhost:3001',
     ],
     credentials: true,
   });

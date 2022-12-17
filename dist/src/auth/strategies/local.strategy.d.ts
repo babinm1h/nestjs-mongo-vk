@@ -5,7 +5,7 @@ export declare class LocalStrategy extends LocalStrategy_base {
     private AuthService;
     constructor(AuthService: AuthService);
     validate(email: string, password: string): Promise<import("../../users/user.schema").User & import("mongoose").Document<any, any, any> & {
-        _id: any;
+        _id: import("mongoose").Types.ObjectId;
     }>;
 }
 export {};

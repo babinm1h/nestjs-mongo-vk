@@ -8,11 +8,11 @@ export declare class AuthService {
     private jwtService;
     constructor(userModel: Model<UserDocument>, jwtService: JwtService);
     validateUser({ email, password }: AuthDto): Promise<User & import("mongoose").Document<any, any, any> & {
-        _id: any;
+        _id: import("mongoose").Types.ObjectId;
     }>;
     register({ email, name, password }: RegisterDto): Promise<{
         user: User & import("mongoose").Document<any, any, any> & {
-            _id: any;
+            _id: import("mongoose").Types.ObjectId;
         };
         token: string;
     }>;

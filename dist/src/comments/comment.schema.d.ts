@@ -5,9 +5,10 @@
 /// <reference types="mongoose/types/cursor" />
 /// <reference types="mongoose/types/document" />
 /// <reference types="mongoose/types/error" />
+/// <reference types="mongoose/types/expressions" />
 /// <reference types="mongoose/types/helpers" />
 /// <reference types="mongoose/types/middlewares" />
-/// <reference types="mongoose/types/indizes" />
+/// <reference types="mongoose/types/indexes" />
 /// <reference types="mongoose/types/models" />
 /// <reference types="mongoose/types/mongooseoptions" />
 /// <reference types="mongoose/types/pipelinestage" />
@@ -19,11 +20,13 @@
 /// <reference types="mongoose/types/types" />
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
+/// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose/types/inferschematype" />
 import { Document, Types } from 'mongoose';
-export declare type CommentDocument = Comment & Document;
+export type CommentDocument = Comment & Document;
 export declare class Comment {
     text: string;
     user: Types.ObjectId;
     video: Types.ObjectId;
 }
-export declare const CommentSchema: import("mongoose").Schema<Comment, import("mongoose").Model<Comment, any, any, any>, {}, {}, any>;
+export declare const CommentSchema: import("mongoose").Schema<Comment, import("mongoose").Model<Comment, any, any, any, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Comment>;

@@ -1,4 +1,7 @@
 /// <reference types="multer" />
+/// <reference types="express-serve-static-core" />
+/// <reference types="passport" />
+/// <reference types="express-session" />
 export declare enum FileTypes {
     VIDEO = "video",
     PREVIEW = "preview",

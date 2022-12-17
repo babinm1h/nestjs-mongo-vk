@@ -5,7 +5,7 @@ export declare class AuthController {
     constructor(authService: AuthService);
     register(dto: RegisterDto): Promise<{
         user: import("../users/user.schema").User & import("mongoose").Document<any, any, any> & {
-            _id: any;
+            _id: import("mongoose").Types.ObjectId;
         };
         token: string;
     }>;
