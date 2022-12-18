@@ -99,7 +99,6 @@ export class VideosService {
       preview,
       isPublic: JSON.parse(dto.isPublic),
       user: dto.user,
-      views: 64785,
     });
 
     return await created.populate('user', '-password');
